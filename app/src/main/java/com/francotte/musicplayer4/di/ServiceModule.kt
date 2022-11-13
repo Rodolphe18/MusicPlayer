@@ -2,6 +2,7 @@ package com.francotte.musicplayer4.di
 
 
 import android.content.Context
+import com.francotte.musicplayer4.data.remote.MusicDatabase
 import com.google.android.exoplayer2.C
 import com.google.android.exoplayer2.SimpleExoPlayer
 import com.google.android.exoplayer2.audio.AudioAttributes
@@ -17,6 +18,10 @@ import dagger.hilt.android.scopes.ServiceScoped
 @Module
 @InstallIn(ServiceComponent::class)
 object ServiceModule {
+
+    @ServiceScoped
+    @Provides
+    fun provideMusicDatabase() = MusicDatabase()
 
 
     @ServiceScoped
