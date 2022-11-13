@@ -12,6 +12,7 @@ import androidx.media.MediaBrowserServiceCompat
 import com.francotte.musicplayer4.exoplayer.callbacks.MusicPlaybackPreparer
 import com.francotte.musicplayer4.exoplayer.callbacks.MusicPlayerEventListener
 import com.francotte.musicplayer4.exoplayer.callbacks.MusicPlayerNotificationListener
+import com.francotte.musicplayer4.other.Constants.NETWORK_ERROR
 import com.google.android.exoplayer2.Player
 import com.google.android.exoplayer2.SimpleExoPlayer
 import com.google.android.exoplayer2.ext.mediasession.MediaSessionConnector
@@ -151,7 +152,13 @@ class MusicService : MediaBrowserServiceCompat() {
                         if(!isPlayerInitialized && firebaseMusicSource.songs.isNotEmpty())
                             preparePlayer(firebaseMusicSource.songs, firebaseMusicSource.songs[0], false)
                         isPlayerInitialized = true
+                    } else {
+                        mediaSession.sendSessionEvent(NETWORK_ERROR, null)
+                        result.sendResult(null)
                     }
+                }
+                if(!resultSent) {
+                    result.detach()
                 }
             }
         }
