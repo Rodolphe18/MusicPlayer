@@ -33,6 +33,8 @@ class MusicService : MediaBrowserServiceCompat() {
     private lateinit var mediaSession : MediaSessionCompat
     private lateinit var mediaSessionConnector : MediaSessionConnector
 
+    var isForegroundService = false
+
     override fun onCreate() {
         super.onCreate()
         val activityIntent = packageManager?.getLaunchIntentForPackage(packageName)?.let {
@@ -59,7 +61,7 @@ class MusicService : MediaBrowserServiceCompat() {
         clientUid: Int,
         rootHints: Bundle?
     ): BrowserRoot? {
-
+        return null
     }
 
     override fun onLoadChildren(
