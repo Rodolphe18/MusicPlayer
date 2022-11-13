@@ -1,4 +1,4 @@
-package com.example.musicplayer
+package com.francotte.musicplayer4
 
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
