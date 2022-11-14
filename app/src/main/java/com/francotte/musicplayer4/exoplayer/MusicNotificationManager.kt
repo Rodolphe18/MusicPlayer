@@ -29,7 +29,7 @@ class MusicNotificationManager(
         notificationManager = PlayerNotificationManager.createWithNotificationChannel(
             context,
             NOTIFICATION_CHANNEL_ID,
-            NOTIFICATION_ID,
+            R.string.notification_channel_name,
             NOTIFICATION_ID,
             DescriptionAdapter(mediaController, context),
         ).apply {

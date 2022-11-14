@@ -10,15 +10,16 @@ import com.bumptech.glide.Glide
 import com.bumptech.glide.RequestManager
 import com.francotte.musicplayer4.R
 import com.francotte.musicplayer4.data.entities.Song
+import com.francotte.musicplayer4.databinding.ListItemBinding
 import javax.inject.Inject
 
 class SongAdapter @Inject constructor(
     private val glide: RequestManager
 ) : RecyclerView.Adapter<SongAdapter.SongViewHolder>() {
 
-    lateinit var songAdapterBinding :
+    private lateinit var binding: ListItemBinding
 
-    class SongViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
+    class SongViewHolder(binding: ListItemBinding) : RecyclerView.ViewHolder(binding.root) {
 
     }
 
@@ -40,8 +41,8 @@ class SongAdapter @Inject constructor(
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): SongViewHolder {
         return SongViewHolder(
-            LayoutInflater.from(parent.context).inflate(
-                R.layout.list_item,
+            ListItemBinding.inflate(
+                LayoutInflater.from(parent.context),
                 parent,
                 false
             )
@@ -51,9 +52,11 @@ class SongAdapter @Inject constructor(
     override fun onBindViewHolder(holder: SongViewHolder, position: Int) {
         val song = songs[position]
         holder.itemView.apply {
-            tvPrimary.text = song.title
-            tvSecondary.text = song.subtitle
-            glide.load(song.imageUrl).into(ivItemImage)
+
+
+            binding.tvPrimary.text = song.title
+            binding.tvSecondary.text = song.subtitle
+            glide.load(song.imageUrl).into(binding.ivItemImage)
 
             setOnClickListener {
                 onItemClickListener?.let { click ->
@@ -63,9 +66,9 @@ class SongAdapter @Inject constructor(
         }
     }
 
-    private var onItemClickListener : ((Song) -> Unit)? = null
+    private var onItemClickListener: ((Song) -> Unit)? = null
 
-    fun setOnItemClickListener (listener : (Song) -> Unit) {
+    fun setOnItemClickListener(listener: (Song) -> Unit) {
         onItemClickListener = listener
     }
 
