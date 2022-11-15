@@ -11,6 +11,7 @@ import com.francotte.musicplayer4.exoplayer.MusicServiceConnection
 import com.francotte.musicplayer4.exoplayer.isPlayEnabled
 import com.francotte.musicplayer4.exoplayer.isPlaying
 import com.francotte.musicplayer4.exoplayer.isPrepared
+import com.francotte.musicplayer4.other.Constants.MEDIA_ROOT_ID
 import com.francotte.musicplayer4.other.Resource
 
 class MainViewModel @ViewModelInject constructor(
@@ -28,9 +29,7 @@ class MainViewModel @ViewModelInject constructor(
 
     init {
         _mediaItems.postValue(Resource.loading(null))
-        musicServiceConnection.subscribe(
-            "root_id",
-            object : MediaBrowserCompat.SubscriptionCallback() {
+        musicServiceConnection.subscribe(MEDIA_ROOT_ID, object : MediaBrowserCompat.SubscriptionCallback() {
                 override fun onChildrenLoaded(
                     parentId: String,
                     children: MutableList<MediaBrowserCompat.MediaItem>
@@ -64,7 +63,7 @@ class MainViewModel @ViewModelInject constructor(
 
     fun playOrToggleSong(mediaItemSong: Song, toggle: Boolean = false) {
         val isPrepared = playbackState.value?.isPrepared ?: false
-        if (isPrepared && mediaItemSong.mediaId == curPlayingSong.value?.getString(
+        if (isPrepared && mediaItemSong.mediaId == curPlayingSong?.value?.getString(
                 METADATA_KEY_MEDIA_ID
             )
         ) {
@@ -85,7 +84,7 @@ class MainViewModel @ViewModelInject constructor(
     override fun onCleared() {
         super.onCleared()
         musicServiceConnection.unsubscribe(
-            "root_id",
+            MEDIA_ROOT_ID,
             object : MediaBrowserCompat.SubscriptionCallback() {
 
             })

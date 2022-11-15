@@ -5,6 +5,8 @@ import com.bumptech.glide.Glide
 import com.bumptech.glide.load.engine.DiskCacheStrategy
 import com.bumptech.glide.request.RequestOptions
 import com.francotte.musicplayer4.R
+import com.francotte.musicplayer4.adapters.SwipeSongAdapter
+
 import com.francotte.musicplayer4.exoplayer.MusicServiceConnection
 import dagger.Module
 import dagger.Provides
@@ -19,7 +21,12 @@ object AppModule {
 
     @Provides
     @Singleton
-    fun provideProvideServiceConnection(@ApplicationContext context : Context) = MusicServiceConnection(context)
+    fun provideMusicServiceConnection(@ApplicationContext context : Context) = MusicServiceConnection(context)
+
+
+  @Provides
+  @Singleton
+  fun provideSwipeSongAdapter() = SwipeSongAdapter()
 
     @Provides
     @Singleton

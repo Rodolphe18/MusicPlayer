@@ -12,6 +12,7 @@ import androidx.media.MediaBrowserServiceCompat
 import com.francotte.musicplayer4.exoplayer.callbacks.MusicPlaybackPreparer
 import com.francotte.musicplayer4.exoplayer.callbacks.MusicPlayerEventListener
 import com.francotte.musicplayer4.exoplayer.callbacks.MusicPlayerNotificationListener
+import com.francotte.musicplayer4.other.Constants.MEDIA_ROOT_ID
 import com.francotte.musicplayer4.other.Constants.NETWORK_ERROR
 import com.google.android.exoplayer2.Player
 import com.google.android.exoplayer2.SimpleExoPlayer
@@ -57,6 +58,7 @@ class MusicService : MediaBrowserServiceCompat() {
         private set
     }
 
+
     override fun onCreate() {
         super.onCreate()
         serviceScope.launch {
@@ -66,6 +68,7 @@ class MusicService : MediaBrowserServiceCompat() {
         val activityIntent = packageManager?.getLaunchIntentForPackage(packageName)?.let {
             PendingIntent.getActivity(this, 0, it, 0)
         }
+
         mediaSession = MediaSessionCompat(this, SERVICE_TAG).apply {
             setSessionActivity(activityIntent)
             isActive = true
@@ -114,7 +117,7 @@ class MusicService : MediaBrowserServiceCompat() {
     ) {
         val curSongIndex = if (curPlayingSong == null) 0 else songs.indexOf(itemToPlay)
         exoPlayer.prepare(firebaseMusicSource.asMediaSource(dataSourceFactory))
-        exoPlayer.seekTo(curSongIndex, 0)
+        exoPlayer.seekTo(curSongIndex, 0L)
         exoPlayer.playWhenReady = playNow
     }
 
@@ -137,23 +140,23 @@ class MusicService : MediaBrowserServiceCompat() {
         clientUid: Int,
         rootHints: Bundle?
     ): BrowserRoot? {
-        return BrowserRoot("root_id", null)
+        return BrowserRoot(MEDIA_ROOT_ID, null)
     }
+
 
     override fun onLoadChildren(
         parentId: String,
         result: Result<MutableList<MediaBrowserCompat.MediaItem>>
     ) {
         when(parentId) {
-            "root_id" -> {
+            MEDIA_ROOT_ID -> {
                 val resultSent = firebaseMusicSource.whenReady { isInitialized ->
                     if(isInitialized) {
                      result.sendResult(firebaseMusicSource.asMediaItems())
-                        if(!isPlayerInitialized && firebaseMusicSource.songs.isNotEmpty())
+                        if(!isInitialized && firebaseMusicSource.songs.isNotEmpty()) {
                             preparePlayer(firebaseMusicSource.songs, firebaseMusicSource.songs[0], false)
-                        isPlayerInitialized = true
+                        isPlayerInitialized = true }
                     } else {
-                        mediaSession.sendSessionEvent(NETWORK_ERROR, null)
                         result.sendResult(null)
                     }
                 }

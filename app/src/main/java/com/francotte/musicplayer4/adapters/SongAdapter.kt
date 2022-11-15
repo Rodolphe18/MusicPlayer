@@ -13,25 +13,14 @@ import com.francotte.musicplayer4.data.entities.Song
 import com.francotte.musicplayer4.databinding.ListItemBinding
 import javax.inject.Inject
 
-class SongAdapter @Inject constructor(
-    private val glide: RequestManager
-) : RecyclerView.Adapter<SongAdapter.SongViewHolder>() {
+class SongAdapter @Inject constructor(private val glide: RequestManager) : RecyclerView.Adapter<SongAdapter.SongViewHolder>() {
 
-    private lateinit var binding: ListItemBinding
 
-    class SongViewHolder(binding: ListItemBinding) : RecyclerView.ViewHolder(binding.root) {
-
-    }
+    class SongViewHolder(val binding: ListItemBinding) : RecyclerView.ViewHolder(binding.root)
 
     private val diffCallback = object : DiffUtil.ItemCallback<Song>() {
-        override fun areItemsTheSame(oldItem: Song, newItem: Song): Boolean {
-            return oldItem.mediaId == newItem.mediaId
-        }
-
-        override fun areContentsTheSame(oldItem: Song, newItem: Song): Boolean {
-            return oldItem.hashCode() == newItem.hashCode()
-        }
-    }
+        override fun areItemsTheSame(oldItem: Song, newItem: Song): Boolean { return oldItem.mediaId == newItem.mediaId }
+        override fun areContentsTheSame(oldItem: Song, newItem: Song): Boolean { return oldItem.hashCode() == newItem.hashCode() } }
 
     private val differ = AsyncListDiffer(this, diffCallback)
 
@@ -40,29 +29,20 @@ class SongAdapter @Inject constructor(
         set(value) = differ.submitList(value)
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): SongViewHolder {
-        return SongViewHolder(
-            ListItemBinding.inflate(
-                LayoutInflater.from(parent.context),
-                parent,
-                false
-            )
-        )
+        return SongViewHolder(ListItemBinding.inflate(LayoutInflater.from(parent.context), parent, false))
     }
 
     override fun onBindViewHolder(holder: SongViewHolder, position: Int) {
         val song = songs[position]
-        holder.itemView.apply {
+        holder.itemView.apply { holder.binding.tvPrimary.text = song.title
+            holder.binding.tvSecondary.text = song.subtitle
+            glide.load(song.imageUrl).into(holder.binding.ivItemImage)
+        }
 
-
-            binding.tvPrimary.text = song.title
-            binding.tvSecondary.text = song.subtitle
-            glide.load(song.imageUrl).into(binding.ivItemImage)
-
-            setOnClickListener {
+            holder.binding.ivItemImage.setOnClickListener {
                 onItemClickListener?.let { click ->
                     click(song)
                 }
-            }
         }
     }
 

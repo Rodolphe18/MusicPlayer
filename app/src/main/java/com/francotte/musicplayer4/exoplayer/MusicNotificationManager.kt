@@ -30,6 +30,7 @@ class MusicNotificationManager(
             context,
             NOTIFICATION_CHANNEL_ID,
             R.string.notification_channel_name,
+            R.string.notification_channel_description,
             NOTIFICATION_ID,
             DescriptionAdapter(mediaController, context),
         ).apply {

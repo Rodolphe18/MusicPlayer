@@ -2,6 +2,7 @@ package com.francotte.musicplayer4.di
 
 
 import android.content.Context
+import com.francotte.musicplayer4.R
 import com.francotte.musicplayer4.data.remote.MusicDatabase
 import com.google.android.exoplayer2.C
 import com.google.android.exoplayer2.SimpleExoPlayer
@@ -43,6 +44,6 @@ object ServiceModule {
     @Provides
     fun provideDataSourceFactory(
         @ApplicationContext context: Context
-    ) = DefaultDataSourceFactory(context, Util.getUserAgent(context, "Music Player"))
+    ) = DefaultDataSourceFactory(context, Util.getUserAgent(context, "MusicPlayer4"))
 
 }
