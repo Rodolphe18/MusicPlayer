@@ -4,12 +4,14 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.core.content.res.ResourcesCompat
 import androidx.core.view.isGone
 import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentHostCallback
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
+import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.francotte.musicplayer4.R
 import com.francotte.musicplayer4.adapters.SongAdapter
@@ -54,6 +56,11 @@ class HomeFragment : Fragment(R.layout.fragment_home) {
     private fun setupRecyclerView() = binding.rvAllSongs.apply {
         adapter = songAdapter
         layoutManager = LinearLayoutManager(requireContext())
+        val dividerItemDecoration = DividerItemDecoration(activity, DividerItemDecoration.VERTICAL)
+        ResourcesCompat.getDrawable(resources, R.drawable.divider, null)?.let {
+            dividerItemDecoration.setDrawable(it)
+        }
+        binding.rvAllSongs.addItemDecoration(dividerItemDecoration)
     }
 
     private fun subscribeToObservers() {

@@ -48,7 +48,7 @@
         android:id="@+id/ivPlayPause"
         android:layout_width="56dp"
         android:layout_height="56dp"
-        android:background="@color/darkBackground"
+        android:background="@color/lightBackground"
         android:src="@drawable/ic_play"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent" />
