@@ -76,8 +76,5 @@ class SongFragment : Fragment(R.layout.fragment_song) {
             updateTitleAndSongImage(curPlayingSong!!)
 
         }
-
-
     }
-
 }

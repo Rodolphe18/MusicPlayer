@@ -2,9 +2,11 @@ package com.francotte.musicplayer4.adapters
 
 import android.view.LayoutInflater
 import android.view.ViewGroup
+import androidx.navigation.fragment.NavHostFragment
 import androidx.recyclerview.widget.AsyncListDiffer
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
+import com.francotte.musicplayer4.R
 import com.francotte.musicplayer4.data.entities.Song
 import com.francotte.musicplayer4.databinding.SwipeItemBinding
 
@@ -46,12 +48,18 @@ class SwipeSongAdapter () : RecyclerView.Adapter<SwipeSongAdapter.SwipeSongViewH
         holder.itemView.apply {
             val text = "${song.title} - ${song.subtitle}"
             holder.binding.tvPrimary.text = text
+
+        setOnClickListener {
+            onItemClickListener?.let { click ->
+                click(song)
+            }
+        }
         }
     }
 
-    private var onItemClickListener: ((Song) -> Unit)? = null
+    protected var onItemClickListener: ((Song) -> Unit)? = null
 
-    fun setOnItemClickListener(listener: (Song) -> Unit) {
+    fun setItemClickListener(listener: (Song) -> Unit) {
         onItemClickListener = listener
     }
 

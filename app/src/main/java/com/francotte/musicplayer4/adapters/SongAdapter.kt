@@ -3,6 +3,8 @@ package com.francotte.musicplayer4.adapters
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.fragment.app.FragmentActivity
+import androidx.navigation.fragment.NavHostFragment
 import androidx.recyclerview.widget.AsyncListDiffer
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
@@ -13,14 +15,20 @@ import com.francotte.musicplayer4.data.entities.Song
 import com.francotte.musicplayer4.databinding.ListItemBinding
 import javax.inject.Inject
 
-class SongAdapter @Inject constructor(private val glide: RequestManager) : RecyclerView.Adapter<SongAdapter.SongViewHolder>() {
-
+class SongAdapter @Inject constructor(private val glide: RequestManager) :
+    RecyclerView.Adapter<SongAdapter.SongViewHolder>() {
 
     class SongViewHolder(val binding: ListItemBinding) : RecyclerView.ViewHolder(binding.root)
 
     private val diffCallback = object : DiffUtil.ItemCallback<Song>() {
-        override fun areItemsTheSame(oldItem: Song, newItem: Song): Boolean { return oldItem.mediaId == newItem.mediaId }
-        override fun areContentsTheSame(oldItem: Song, newItem: Song): Boolean { return oldItem.hashCode() == newItem.hashCode() } }
+        override fun areItemsTheSame(oldItem: Song, newItem: Song): Boolean {
+            return oldItem.mediaId == newItem.mediaId
+        }
+
+        override fun areContentsTheSame(oldItem: Song, newItem: Song): Boolean {
+            return oldItem.hashCode() == newItem.hashCode()
+        }
+    }
 
     private val differ = AsyncListDiffer(this, diffCallback)
 
@@ -29,21 +37,34 @@ class SongAdapter @Inject constructor(private val glide: RequestManager) : Recyc
         set(value) = differ.submitList(value)
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): SongViewHolder {
-        return SongViewHolder(ListItemBinding.inflate(LayoutInflater.from(parent.context), parent, false))
+        return SongViewHolder(
+            ListItemBinding.inflate(
+                LayoutInflater.from(parent.context),
+                parent,
+                false
+            )
+        )
     }
 
     override fun onBindViewHolder(holder: SongViewHolder, position: Int) {
         val song = songs[position]
-        holder.itemView.apply { holder.binding.tvPrimary.text = song.title
+        holder.itemView.apply {
+            holder.binding.tvPrimary.text = song.title
             holder.binding.tvSecondary.text = song.subtitle
             glide.load(song.imageUrl).into(holder.binding.ivItemImage)
         }
 
-            holder.binding.ivItemImage.setOnClickListener {
-                onItemClickListener?.let { click ->
-                    click(song)
-                }
+        holder.binding.ivItemImage.setOnClickListener {
+            onItemClickListener?.let { click ->
+                click(song)
+            }
         }
+        holder.itemView.setOnClickListener() {
+            onItemClickListener?.let { click ->
+                click(song)
+            }
+        }
+
     }
 
     private var onItemClickListener: ((Song) -> Unit)? = null

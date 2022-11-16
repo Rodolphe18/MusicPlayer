@@ -4,11 +4,13 @@ import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.support.v4.media.session.PlaybackStateCompat
 import android.widget.TextView
+import android.widget.Toast
 import androidx.activity.viewModels
 import androidx.core.view.isVisible
 import androidx.fragment.app.FragmentManager
 import androidx.fragment.app.FragmentTransaction
 import androidx.navigation.NavHostController
+import androidx.navigation.Navigation
 import androidx.navigation.findNavController
 import androidx.navigation.fragment.NavHostFragment
 import androidx.navigation.fragment.findNavController
@@ -22,6 +24,7 @@ import com.francotte.musicplayer4.exoplayer.isPlaying
 import com.francotte.musicplayer4.exoplayer.toSong
 import com.francotte.musicplayer4.other.Status
 import com.francotte.musicplayer4.ui.fragments.HomeFragment
+import com.francotte.musicplayer4.ui.fragments.SongFragment
 import com.francotte.musicplayer4.ui.viewmodels.MainViewModel
 import com.google.android.material.snackbar.Snackbar
 import dagger.hilt.android.AndroidEntryPoint
@@ -44,7 +47,11 @@ class MainActivity : AppCompatActivity() {
 
     private var playbackState: PlaybackStateCompat? = null
 
-    private val navHostFragment = supportFragmentManager.findFragmentById(R.id.navHostFragment) as NavHostFragment
+    private val navHostFragment = supportFragmentManager.findFragmentById(R.id.navHostFragment) as NavHostFragment?
+
+    val songFragment = SongFragment()
+    val fragmentManager: FragmentManager = supportFragmentManager
+    val fragmentTransaction: FragmentTransaction = fragmentManager.beginTransaction()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -71,26 +78,20 @@ class MainActivity : AppCompatActivity() {
             }
         }
 
-
-        swipeSongAdapter.setOnItemClickListener {
-            navHostFragment.findNavController().navigate(
-                R.id.globalActionToSongFragment
-            )
+        swipeSongAdapter.setItemClickListener{
+            binding.navHostFragment.findNavController().navigate(R.id.globalActionToSongFragment)
         }
 
-        navHostFragment.findNavController().addOnDestinationChangedListener() { _, destination, _ ->
-            when (destination.id) {
-                R.id.songFragment -> hideBottomBar()
-                R.id.homeFragment -> showBottomBar()
-                else -> showBottomBar()
+        swipeSongAdapter.setItemClickListener{
+            binding.navHostFragment.findNavController().navigate(R.id.globalActionToSongFragment)
+            binding.navHostFragment.findNavController().addOnDestinationChangedListener() { _, destination, _ ->
+                when (destination.id) {
+                    R.id.songFragment -> hideBottomBar()
+                    R.id.homeFragment -> showBottomBar()
+                    else -> showBottomBar()
+                }
             }
         }
-
-        val homeFragment = HomeFragment()
-        val fragmentManager: FragmentManager = supportFragmentManager
-        val fragmentTransaction: FragmentTransaction = fragmentManager.beginTransaction()
-        fragmentTransaction.replace(R.id.flFragmentContainer, homeFragment).commit()
-
     }
 
     private fun hideBottomBar() {
@@ -134,7 +135,7 @@ class MainActivity : AppCompatActivity() {
             if (it == null) return@observe
             curPlayingSong = it.toSong()
             glide.load(curPlayingSong?.imageUrl).into(binding.ivCurSongImage)
-            //  switchViewPagerToCurrentSong(curPlayingSong ?: return@observe)
+             switchViewPagerToCurrentSong(curPlayingSong ?: return@observe)
         }
         mainViewModel.playbackState.observe(this) {
             playbackState = it
